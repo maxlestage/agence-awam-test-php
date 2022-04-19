@@ -57,17 +57,14 @@ if (isset($_POST["submit"])) {
   if (!empty($_POST["calc_1"])) {
     $selected_1 = $_POST["calc_1"];
     $result_1 = $_POST["value_1"];
-    // print $selected_1 . "  ";
-    // print $result_1;
+
     switch ($selected_1) {
       case "e-1":
         $result_eu_1 = euro($_POST["value_1"]);
-        // print $result_eu_1;
         $currency_1 = "€";
         break;
       case "d-1":
         $result_dollar_1 = dollar($_POST["value_1"]);
-        // print $result_dollar_1;
         $currency_1 = "$";
         break;
     }
@@ -80,17 +77,14 @@ if (isset($_POST["submit"])) {
   if (!empty($_POST["calc_2"])) {
     $selected_2 = $_POST["calc_2"];
     $result_2 = $_POST["value_2"];
-    // print $selected_2 . "  ";
 
     switch ($selected_2) {
       case "e-2":
         $result_eu_2 = euro($_POST["value_2"]);
-        // print $result_eu_2;
         $currency_2 = "€";
         break;
       case "d-2":
         $result_dollar_2 = dollar($_POST["value_2"]);
-        // print $result_dollar_2;
         $currency_2 = "$";
         break;
     }
