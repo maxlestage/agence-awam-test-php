@@ -39,164 +39,155 @@ Bonne journée,
 
 */
 
-$result_eu_1;
-$result_dollar_1;
+class ExchangeRate
+{
+  private $currency_1;
+  private $choice_1;
 
-$result_eu_2;
-$result_dollar_2;
+  private $currency_2;
+  private $choice_2;
 
-$currency_1;
-$currency_2;
+  public function __construct($choice_1, $currency_1, $choice_2, $currency_2)
+  {
+    $this->choice_1 = $choice_1;
+    $this->currency_1 = $currency_1;
 
-$sum1;
-$sum2;
+    $this->choice_2 = $choice_2;
+    $this->currency_2 = $currency_2;
+  }
 
-$result;
-
-if (isset($_POST["submit"])) {
-  if (!empty($_POST["calc_1"])) {
-    $selected_1 = $_POST["calc_1"];
-    $result_1 = $_POST["value_1"];
-
-    switch ($selected_1) {
-      case "e-1":
-        $result_eu_1 = euro($_POST["value_1"]);
-        $currency_1 = "€";
-        break;
-      case "d-1":
-        $result_dollar_1 = dollar($_POST["value_1"]);
-        $currency_1 = "$";
-        break;
+  public function get_currency_choice()
+  {
+    if (!empty($_POST["calc_1"]) && !empty($_POST["calc_2"])) {
+      $choice_1 = $this->choice_1 = $_POST["calc_1"];
+      $choice_2 = $this->choice_2 = $_POST["calc_2"];
+    } else {
+      echo "Merci de bien vouloir selectionner une valeur.";
     }
 
-    echo "<br/>";
-  } else {
-    echo "Merci de bien vouloir selectionner une valeur.";
+    return [$choice_1, $choice_2];
   }
 
-  if (!empty($_POST["calc_2"])) {
-    $selected_2 = $_POST["calc_2"];
-    $result_2 = $_POST["value_2"];
+  public function get_value()
+  {
+    if (!empty($_POST["value_1"]) && !empty($_POST["value_2"])) {
+      $currency_1 = $this->currency_1 = $_POST["value_1"];
+      $currency_2 = $this->currency_2 = $_POST["value_2"];
+    } else {
+      echo "Merci de bien vouloir ajouter une valeur.";
+    }
 
-    switch ($selected_2) {
-      case "e-2":
-        $result_eu_2 = euro($_POST["value_2"]);
-        $currency_2 = "€";
+    return [$currency_1, $currency_2];
+  }
+
+  public function calc_devise($choice_1, $choice_2, $currency_1, $currency_2)
+  {
+    switch ($choice_1 && $choice_2) {
+      case $choice_1 == "e-1" && $choice_2 == "e-2":
+        function euro_and_euro($currency_1, $currency_2)
+        {
+          $total = $currency_1 + $currency_2;
+          return $total;
+        }
+        $result = euro_and_euro($currency_1, $currency_2);
+        $curency = "€";
+        return [$result, $curency];
         break;
-      case "d-2":
-        $result_dollar_2 = dollar($_POST["value_2"]);
-        $currency_2 = "$";
+      case $choice_1 == "e-1" && $choice_2 == "d-2":
+        function euro_and_dollar($currency_1, $currency_2)
+        {
+          $currency_2 = $currency_2 * 1.08126;
+          $total = $currency_1 + $currency_2;
+          return $total;
+        }
+        $result = euro_and_dollar($currency_1, $currency_2);
+        $curency = "$";
+        return [$result, $curency];
+        break;
+      case $choice_1 == "d-1" && $choice_2 == "d-2":
+        function dollar_and_dollar($currency_1, $currency_2)
+        {
+          $total = $currency_1 + $currency_2;
+          return $total;
+        }
+        $result = dollar_and_dollar($currency_1, $currency_2);
+        $curency = "$";
+        return [$result, $curency];
+        break;
+      case $choice_1 == "d-1" && $choice_2 == "e-2":
+        function dollar_and_euro($currency_1, $currency_2)
+        {
+          $currency_1 = $currency_1 * 1.08126;
+          $total = $currency_1 + $currency_2;
+          return $total;
+        }
+        $result = dollar_and_euro($currency_1, $currency_2);
+        $curency = "€";
+        return [$result, $curency];
         break;
     }
-  } else {
-    echo "Merci de bien vouloir selectionner une valeur.";
-  }
-
-  switch ($selected_1 && $selected_2) {
-    case $selected_1 == "e-1" && $selected_2 == "e-2":
-      $result = euro_and_euro($result_eu_1, $result_eu_2);
-      $curency = "€";
-      break;
-    case $selected_1 == "e-1" && $selected_2 == "d-2":
-      $result = euro_and_dollar($result_eu_1, $result_dollar_2);
-      $curency = "$";
-      break;
-    case $selected_1 == "d-1" && $selected_2 == "d-2":
-      $result = dollar_and_dollar($result_dollar_1, $result_dollar_2);
-      $curency = "$";
-      break;
-    case $selected_1 == "d-1" && $selected_2 == "e-2":
-      $result = dollar_and_euro($result_dollar_1, $result_eu_2);
-      $curency = "€";
-      break;
   }
 }
 
-function euro($val1)
-{
-  $sum1 = $val1;
-  return $sum1;
-}
+$choice = new ExchangeRate(
+  $_POST["calc_1"],
+  $_POST["value_1"],
+  $_POST["calc_2"],
+  $_POST["value_2"]
+);
 
-function dollar($val2)
-{
-  $sum2 = $val2;
-  return $sum2;
-}
+// Le choix de la devise :
+$array_currency = $choice->get_currency_choice();
+$choice_1 = $array_currency[0];
+$choice_2 = $array_currency[1];
+// echo $choice_1 . " et " .  $choice_2;
 
-function euro_and_euro($result_eu_1, $result_eu_2)
-{
-  $sum1 = $result_eu_1;
-  $sum2 = $result_eu_2;
-  $total = $sum1 + $sum2;
-  return $total;
-}
+// L'ajout de la valeur :
+$array_value = $choice->get_value();
+$currency_1 = floatval($array_value[0]);
+$currency_2 = floatval($array_value[1]);
+// echo $currency_1 . " et " .  $currency_2;
 
-function euro_and_dollar($result_eu_1, $result_dollar_2)
-{
-  $sum1 = $result_eu_1;
-  $sum2 = $result_dollar_2 * 1.08126;
-  $total = $sum1 + $sum2;
-  return $total;
-}
-
-function dollar_and_dollar($result_dollar_1, $result_dollar_2)
-{
-  $sum1 = $result_dollar_1;
-  $sum2 = $result_dollar_2;
-  $total = $sum1 + $sum2;
-  return $total;
-}
-
-function dollar_and_euro($result_dollar_1, $result_eu_2)
-{
-  $sum1 = $result_dollar_1 * 1.08126;
-  $sum2 = $result_eu_2;
-  $total = $sum1 + $sum2;
-  return $total;
-}
+// Résultat du calcul :
+$result_array = $choice->calc_devise(
+  $choice_1,
+  $choice_2,
+  $currency_1,
+  $currency_2
+);
+$result = $result_array[0];
+$currency = $result_array[1];
 ?>
-
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Conversions</title>
-    </head>
-    <body>
 
-        <form method="post">
-                 Calculer vos devises : <input type="number" name="value_1" required />
-            <select name="calc_1" required>
-                    <option value=""> Choissisez une devise </option>
-                    <option value="e-1">Euro</option>
-                    <option value="d-1">Dollar</option>
-              
-            </select><span> en : </span><input type="number" name="value_2" required />
-            <select name="calc_2" required>
-                    <option value=""> Choissisez une devise </option>
-                    <option value="e-2">Euro</option>
-                    <option value="d-2">Dollar</option>
-            </select>
-            <input type="submit" name="submit" value="Calculer" />
-        </form>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Conversions</title>
+</head>
 
-        <?php if (!empty($selected_1 && $selected_2)) {
-          echo "<p> Voici le résultat du calcul pour : </p>";
-          echo "<p>" .
-            $result_1 .
-            $currency_1 .
-            "  +  " .
-            $result_2 .
-            $currency_2 .
-            " = " .
-            $result .
-            $curency .
-            "</p>";
-        } else {
-          echo "<p>" . "La saisie n'est pas correcte" . "</p>";
-        } ?>
-    </body>
+<body>
+
+  <form method="post">
+    Calculer vos devises : <input type="number" name="value_1" min="0" required />
+    <select name="calc_1" required>
+      <option value=""> Choissisez une devise </option>
+      <option value="e-1">Euro</option>
+      <option value="d-1">Dollar</option>
+
+    </select><span> en : </span><input type="number" name="value_2" min="0" required />
+    <select name="calc_2" required>
+      <option value=""> Choissisez une devise </option>
+      <option value="e-2">Euro</option>
+      <option value="d-2">Dollar</option>
+    </select>
+    <input type="submit" name="submit" value="Calculer" />
+  </form>
+  <?php echo "<p> Voici le résultat du calcul : " .
+    $result .
+    $currency .
+    "</p>"; ?>
+</body>
+
 </html>
-
